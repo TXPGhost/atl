@@ -3,9 +3,9 @@ def void[];
 def true[];
 def false;
 
-def bool|true, false|;
+def bool<true, false>;
 
-def color|red[], green[], blue[]|;
+def color<red[], green[], blue[]>;
 
 def favorite_color[color];
 

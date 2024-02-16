@@ -9,11 +9,11 @@ pub struct Sum(pub Subtypes);
 impl Parse for Sum {
     fn parse(lexer: &mut crate::lexer::Lexer) -> Result<Self, crate::ast::ParseError> {
         match lexer.peek() {
-            Some(Token::Bar) => {
+            Some(Token::LeftAngleBracket) => {
                 lexer.next()?;
                 Ok(Self(Subtypes::parse(lexer)?))
             }
-            _ => ParseError::err("expected bar"),
+            _ => ParseError::err(lexer.tok_string(), "Sum: expected left angle bracket"),
         }
     }
 }

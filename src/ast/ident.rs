@@ -12,7 +12,7 @@ impl Parse for Ident {
                 lexer.next()?;
                 lexer.tok_string()
             })),
-            _ => ParseError::err("expected identifier"),
+            _ => ParseError::err(lexer.tok_string(), "Ident: expected identifier"),
         }
     }
 }

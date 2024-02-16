@@ -2,7 +2,7 @@ use logos::Logos;
 
 use crate::ast::ParseError;
 
-#[derive(Logos, Debug, PartialEq, Clone, Copy)]
+#[derive(Logos, Debug, PartialEq, Eq, Clone, Copy)]
 #[logos(skip r"[ \t\n\f]+")]
 #[logos(skip "//.*")]
 pub enum Token {
@@ -111,7 +111,7 @@ impl<'source> Lexer<'source> {
         let next_tok = lexer
             .next()
             .transpose()
-            .map_err(|()| ParseError::new("unrecognized token"))?;
+            .map_err(|()| ParseError::new(lexer.slice().to_owned(), "unrecognized token"))?;
         Ok(Self {
             lexer,
             current_tok: None,
@@ -133,7 +133,7 @@ impl<'source> Lexer<'source> {
             .lexer
             .next()
             .transpose()
-            .map_err(|()| ParseError::new("unrecognized token"))?;
+            .map_err(|()| ParseError::new(self.tok_string.to_owned(), "unrecognized token"))?;
 
         Ok(self.current_tok)
     }

@@ -13,15 +13,19 @@ pub mod ty;
 #[derive(Debug, Error, PartialEq, Eq)]
 pub struct ParseError {
     trace: Vec<&'static str>,
+    tok_string: String,
 }
 
 impl ParseError {
-    pub fn new(cause: &'static str) -> Self {
-        Self { trace: vec![cause] }
+    pub fn new(tok_string: String, cause: &'static str) -> Self {
+        Self {
+            trace: vec![cause],
+            tok_string,
+        }
     }
 
-    pub fn err<T>(cause: &'static str) -> Result<T, Self> {
-        Err(Self::new(cause))
+    pub fn err<T>(tok_string: String, cause: &'static str) -> Result<T, Self> {
+        Err(Self::new(tok_string, cause))
     }
 
     #[must_use]
@@ -33,10 +37,18 @@ impl ParseError {
 
 impl Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for message in &self.trace {
-            writeln!(f, "{}", message)?;
-        }
-        Ok(())
+        writeln!(
+            f,
+            "error encountered at token \"{}\" while parsing {}",
+            self.tok_string,
+            self.trace
+                .iter()
+                .fold(String::new(), |acc, s| if acc.is_empty() {
+                    acc + s
+                } else {
+                    acc + "\n-> while parsing " + s
+                })
+        )
     }
 }
 
